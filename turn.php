@@ -31,7 +31,7 @@ class turn
       echo "Número del turno: " . ($this->turn + 1) . "<br>";
       echo "Nombre del jugador: " . $this->player1->getName() . "<br>";
       $this->player1->Shoot($this->player2);
-      $this->setGameOver();
+      $this->setTurnOver();
 
       echo "<br>";
       if (!$this->game_over) 
@@ -40,7 +40,7 @@ class turn
         echo "Nombre del jugador: " . $this->player2->getName() . "<br>";
         $this->player2->Shoot($this->player1);
         $this->turn++;
-        $this->setGameOver();
+        $this->setTurnOver();
       }
       echo "<br>";
       echo "-----<br>";
@@ -48,7 +48,7 @@ class turn
     echo "<br>FIN DE LA PARTIDA<br>";
   }
 
-  public function setGameOver() 
+  public function setTurnOver() 
   {
     if ($this->turn == $this->number_of_turns) 
     {

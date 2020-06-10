@@ -35,7 +35,7 @@ class player
     return $this->boats;
   }
 
-  function getShoot($X, $Y) 
+  function getShoot($X, $Y)
   {
     if ($this->board[$X][$Y]->getWasAttacked()) 
     {
@@ -44,21 +44,29 @@ class player
     echo "Disparo: Casilla(" . $this->xAxisLabel[$X] . ", " . $this->yAxisLabel[$Y] . ")<br>";
     if ($this->board[$X][$Y]->getUnderShip()) 
     {
-      echo "Resultado: Tocado<br>";
       $index = $this->getIndexedShip($this->board[$X][$Y]->getInitialShip());
       $this->boats[$index]->hit($this->board[$X][$Y]->getPositionShip());
+
+      if ($this->boats[$index]->getIsSunk()) 
+      {
+        echo "Resultado: Hundido<br>";
+      } 
+      else 
+      {
+        echo "Resultado: Tocado<br>";
+      }
     } 
     else 
     {
       echo "Resultado: Agua<br>";
     }
-  
+
     $this->board[$X][$Y]->setWasAttacked();
 
     return true;
   }
 
-  function Shoot($player) 
+  function Shoot($player)
   {
     do 
     {
@@ -67,7 +75,7 @@ class player
     } while (!$player->getShoot($X, $Y));
   }
 
-  function getIndexedShip($ini) 
+  function getIndexedShip($ini)
   {
     if ($ini == "D") 
     {
@@ -90,7 +98,7 @@ class player
     $this->name = $name;
   }
 
-  public function initSquares() 
+  public function initSquares()
   {
     for ($i = 0; $i < 10; $i++) 
     {
@@ -101,14 +109,14 @@ class player
     }
   }
 
-  public function initShips() 
+  public function initShips()
   {
     $this->boats[0] = new boat("Destructor", "D", 2);
     $this->boats[1] = new boat("Submarino", "S", 3);
     $this->boats[2] = new boat("Portaviones", "P", 4);
   }
 
-  public function putRandomShips() 
+  public function putRandomShips()
   {
     $index = 0;
     while ($index < 3) 
@@ -132,7 +140,7 @@ class player
     }
   }
 
-  public function placeShips($xAxisLabel, $yAxisLabel, $boat, $orientation) 
+  public function placeShips($xAxisLabel, $yAxisLabel, $boat, $orientation)
   {
     for ($i = 0; $i < $boat->getSize(); $i++) 
     {
@@ -142,7 +150,7 @@ class player
         {
           return false;
         }
-      } 
+      }
       else 
       {
         if ($this->board[$xAxisLabel][$yAxisLabel + $i]->getUnderShip()) 
@@ -170,15 +178,50 @@ class player
   function getSunks()
   {
     $c = 0;
-    if ($this->boats[0]->getIsSunk()) {
+    if ($this->boats[0]->getIsSunk()) 
+    {
       $c++;
     }
-    if ($this->boats[1]->getIsSunk()) {
+    if ($this->boats[1]->getIsSunk()) 
+    {
       $c++;
     }
-    if ($this->boats[2]->getIsSunk()) {
+    if ($this->boats[2]->getIsSunk()) 
+    {
       $c++;
     }
     return $c;
+  }
+
+  function getDamaged()
+  {
+    $count = 0;
+    for ($i = 0; $i < 3; $i++) 
+    {
+      for ($j = 0; $j < $this->boats[$i]->getSize(); $j++) 
+      {
+        if ($this->boats[$i]->getIsHit()[$j]) 
+        {
+          $count++;
+        }
+      }
+    }
+    return $count;
+  }
+
+  function getWaters()
+  {
+    $count = 0; 
+    for ($i=0; $i < 10 ; $i++) 
+    { 
+      for ($j=0; $j < 10; $j++) 
+      { 
+        if($this->board[$i][$j]->getWasAttacked() && !$this->board[$i][$j]->getUnderShip()) 
+        {
+          $count++;
+        }
+      }
+    }
+    return $count;
   }
 }
